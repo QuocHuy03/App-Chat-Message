@@ -1,12 +1,12 @@
 import Http from "../utils/http";
 const http = new Http();
 
-export const login = async (data) => {
+export const postlogin = async (data) => {
   const res = await http.post("/login", data);
-  return res.data;
+  return res;
 };
 
-export const register = async (data) => {
+export const postRegister = async (data) => {
   const res = await http.post("/register", data);
-  return res.data;
+  return res;
 };

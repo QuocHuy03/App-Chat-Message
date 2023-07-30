@@ -5,7 +5,7 @@ import createSagaMiddleware from "redux-saga";
 import { combineReducers } from "redux";
 import authSlice from "./authSlice";
 import rootSaga from "../redux/sagas/rootSaga";
-
+import thunk from "redux-thunk";
 
 const authPersistConfig = {
   key: "auth",
@@ -22,7 +22,7 @@ const sagaMiddleware = createSagaMiddleware();
 
 export const store = configureStore({
   reducer: rootReducer,
-  middleware: [...getDefaultMiddleware(), sagaMiddleware],
+  middleware: [sagaMiddleware, thunk],
 });
 
 sagaMiddleware.run(rootSaga);
