@@ -1,12 +1,11 @@
-// saga.js
-import { put, takeLatest, call } from 'redux-saga/effects';
-import { login, register } from './api'; 
+import { put, takeLatest, call } from "redux-saga/effects";
+import { login, register } from "../services/AuthService";
 import {
   loginSuccess,
   loginError,
   registerSuccess,
   registerError,
-} from './authSlice';
+} from "./authSlice";
 
 function* loginUser(action) {
   try {
@@ -27,8 +26,8 @@ function* registerUser(action) {
 }
 
 function* watchAuth() {
-  yield takeLatest('auth/loginRequest', loginUser);
-  yield takeLatest('auth/registerRequest', registerUser);
+  yield takeLatest("auth/loginRequest", loginUser);
+  yield takeLatest("auth/registerRequest", registerUser);
 }
 
 export default function* authSaga() {
