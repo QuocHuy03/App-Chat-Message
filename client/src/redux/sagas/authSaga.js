@@ -1,11 +1,11 @@
 import { put, takeLatest, call } from "redux-saga/effects";
-import { login, register } from "../services/AuthService";
+import { login, register } from "../../services/AuthService";
 import {
   loginSuccess,
   loginError,
   registerSuccess,
   registerError,
-} from "./authSlice";
+} from "../../stores/authSlice";
 
 function* loginUser(action) {
   try {

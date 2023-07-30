@@ -1,6 +1,23 @@
 import React from "react";
+import { useDispatch } from "react-redux";
+import { loginRequest } from "../../redux/thunks/authThunk";
+import { useForm } from "react-hook-form";
 
 export default function Login() {
+  const dispatch = useDispatch();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm();
+
+  const onSubmit = async (data) => {
+    dispatch(loginRequest(data));
+    reset();
+  };
+
   return (
     <div className="flex min-h-full flex-col justify-center py-12 sm:px:6 lg:px-8 bg-gray-100 ">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
@@ -21,41 +38,34 @@ export default function Login() {
       </div>
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className=" bg-white px-4 py-8 shadow sm:rounded-lg sm:px-10 ">
-          <form className="space-y-6">
+          <form onSubmit={handleSubmit(onSubmit)}>
             <div>
               <label
                 className="block text-sm font-medium leading-6 text-gray-900"
-                htmlFor="email"
+                htmlFor="username"
               >
-                Email address
+                Username
               </label>
               <div className="mt-2">
                 <input
-                  id="email"
-                  type="email"
-                  autoComplete="email"
-                  className="
-          form-input
-          block 
-          w-full
-          rounded-md
-          py-1.5
-          text-gray-900
-          shadow-sm
-          ring-1
-          ring-inset
-          ring-gray-300
-          placeholder: text-gray-400
-          focus:ring-2
-          focus:ring-inset
-          focus:ring-sky-600
-          sm:text-sm
-          sm:leading-6"
-                  name="email"
+                  id="username"
+                  type="text"
+                  className={`form-input pl-4 block w-full rounded-md py-1.5 text-gray-900 shadow-sm ring-1 ring-inset
+                  ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset ${
+                    errors.email ? "border-red-500" : "border-gray-300"
+                  }
+                  focus:ring-sky-600 sm:text-sm sm:leading-6`}
+                  name="username"
+                  {...register("username", { required: true })}
                 />
+                {errors.username && (
+                  <p className="text-red-500 text-sm mt-1">
+                    * Username is required
+                  </p>
+                )}
               </div>
             </div>
-            <div>
+            <div className="pt-5">
               <label
                 className="block text-sm font-medium leading-6 text-gray-900"
                 htmlFor="password"
@@ -66,43 +76,25 @@ export default function Login() {
                 <input
                   id="password"
                   type="password"
-                  autoComplete="password"
-                  className="
-          form-input
-          block 
-          w-full
-          rounded-md
-          py-1.5
-          text-gray-900
-          shadow-sm
-          ring-1
-          ring-inset
-          ring-gray-300
-          placeholder: text-gray-400
-          focus:ring-2
-          focus:ring-inset
-          focus:ring-sky-600
-          sm:text-sm
-          sm:leading-6"
+                  className={`form-input block w-full rounded-md py-1.5 pl-4 text-gray-900 shadow-sm ring-1 ring-inset
+                  ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset ${
+                    errors.password ? "border-red-500" : "border-gray-300"
+                  }focus:ring-sky-600 sm:text-sm sm:leading-6`}
+                  {...register("password", { required: true })}
                   name="password"
+                  placeholder="*********"
                 />
+                {errors.password && (
+                  <p className="text-red-500 text-sm mt-1">
+                    * Password is required
+                  </p>
+                )}
               </div>
             </div>
-            <div>
+            <div className="pt-5">
               <button
                 type="submit"
-                className="
- flex
- justify-center
- rounded-md
- px-3
- py-2
- text-sm
- font-semibold
- focus-visible:outline
- focus-cisible: outline2
- focus-visible: outline-offset-2
-  w-full text-white bg-sky-500 hover:bg-sky-600 focus-visible: outline-sky-600"
+                className="flex justify-center rounded-md px-3 py-2 text-sm font-semibold focus-visible:outline focus-cisible: outline2 focus-visible: outline-offset-2 w-full text-white bg-sky-500 hover:bg-sky-600 focus-visible: outline-sky-600"
               >
                 Sign in
               </button>

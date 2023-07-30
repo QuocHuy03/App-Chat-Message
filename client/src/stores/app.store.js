@@ -1,9 +1,11 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import createSagaMiddleware from "redux-saga";
-import { combineReducers, applyMiddleware } from "redux";
+import { combineReducers } from "redux";
 import authSlice from "./authSlice";
+import rootSaga from "../redux/sagas/rootSaga";
+
 
 const authPersistConfig = {
   key: "auth",
@@ -20,9 +22,9 @@ const sagaMiddleware = createSagaMiddleware();
 
 export const store = configureStore({
   reducer: rootReducer,
-  middleware: [sagaMiddleware],
+  middleware: [...getDefaultMiddleware(), sagaMiddleware],
 });
 
-sagaMiddleware.run(authSaga);
+sagaMiddleware.run(rootSaga);
 
 export const persistor = persistStore(store);
