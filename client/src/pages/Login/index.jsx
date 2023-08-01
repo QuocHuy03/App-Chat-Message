@@ -1,7 +1,8 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import { loginRequest } from "../../redux/thunks/authThunk";
+import { loginRequest } from "../../thunks/authThunk";
 import { useForm } from "react-hook-form";
+import { Link } from "react-router-dom";
 
 export default function Login() {
   const dispatch = useDispatch();
@@ -14,12 +15,14 @@ export default function Login() {
   } = useForm();
 
   const onSubmit = async (data) => {
-    dispatch(loginRequest(data));
-    reset();
+    await dispatch(loginRequest(data));
   };
 
   return (
-    <div className="flex min-h-full flex-col justify-center py-12 sm:px:6 lg:px-8 bg-gray-100 ">
+    <div
+      className="flex min-h-full flex-col justify-center py-12 sm:px:6 lg:px-8 bg-gray-100 "
+      style={{ height: "100vh" }}
+    >
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <img
           alt="Logo"
@@ -118,7 +121,7 @@ export default function Login() {
               >
                 <svg
                   stroke="currentColor"
-                  fill="currentColor"
+                  fillRule="currentColor"
                   strokeWidth={0}
                   viewBox="0 0 16 16"
                   height="1em"
@@ -134,7 +137,7 @@ export default function Login() {
               >
                 <svg
                   stroke="currentColor"
-                  fill="currentColor"
+                  fillRule="currentColor"
                   strokeWidth={0}
                   viewBox="0 0 16 16"
                   height="1em"
@@ -148,7 +151,9 @@ export default function Login() {
           </div>
           <div className=" flex  gap-2  justify-center  text-sm  mt-6  px-2  text-gray-500 ">
             <div>New to Messenger?</div>
-            <div className="underline cursor-pointer">Create an account</div>
+            <Link to={"/register"} className="underline cursor-pointer">
+              Create an account
+            </Link>
           </div>
         </div>
       </div>

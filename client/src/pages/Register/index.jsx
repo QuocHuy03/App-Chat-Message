@@ -1,8 +1,27 @@
 import React from "react";
+import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
+import { registerRequest } from "../../thunks/authThunk";
 
 export default function Register() {
+  const dispatch = useDispatch();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm();
+
+  const onSubmit = async (data) => {
+    await dispatch(registerRequest(data));
+  };
   return (
-    <div className="flex min-h-full flex-col justify-center py-12 sm:px:6 lg:px-8 bg-gray-100 ">
+    <div
+      className="flex min-h-full flex-col justify-center py-12 sm:px:6 lg:px-8 bg-gray-100"
+      style={{ height: "100vh" }}
+    >
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <img
           alt="Logo"
@@ -21,19 +40,20 @@ export default function Register() {
       </div>
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className=" bg-white px-4 py-8 shadow sm:rounded-lg sm:px-10 ">
-          <form className="space-y-6">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <div>
               <label
                 className="block text-sm font-medium leading-6 text-gray-900"
                 htmlFor="name"
               >
-                Name
+                Username
               </label>
               <div className="mt-2">
                 <input
                   id="name"
                   autoComplete="name"
                   className="
+                  pl-4
     form-input
     block 
     w-full
@@ -50,8 +70,14 @@ export default function Register() {
     focus:ring-sky-600
     sm:text-sm
     sm:leading-6"
-                  name="name"
+                  {...register("username", { required: true })}
+                  name="username"
                 />
+                {errors.username && (
+                  <p className="text-red-500 text-sm mt-1">
+                    * Username is required
+                  </p>
+                )}
               </div>
             </div>
             <div>
@@ -66,7 +92,7 @@ export default function Register() {
                   id="email"
                   type="email"
                   autoComplete="email"
-                  className="
+                  className="pl-4
     form-input
     block 
     w-full
@@ -83,8 +109,14 @@ export default function Register() {
     focus:ring-sky-600
     sm:text-sm
     sm:leading-6"
+                  {...register("email", { required: true })}
                   name="email"
                 />
+                {errors.email && (
+                  <p className="text-red-500 text-sm mt-1">
+                    * Email is required
+                  </p>
+                )}
               </div>
             </div>
             <div>
@@ -99,7 +131,9 @@ export default function Register() {
                   id="password"
                   type="password"
                   autoComplete="password"
+                  {...register("password", { required: true })}
                   className="
+                  pl-4
     form-input
     block 
     w-full
@@ -118,6 +152,11 @@ export default function Register() {
     sm:leading-6"
                   name="password"
                 />
+                {errors.password && (
+                  <p className="text-red-500 text-sm mt-1">
+                    * Password is required
+                  </p>
+                )}
               </div>
             </div>
             <div>
@@ -188,7 +227,9 @@ w-full text-white bg-sky-500 hover:bg-sky-600 focus-visible: outline-sky-600"
           </div>
           <div className=" flex  gap-2  justify-center  text-sm  mt-6  px-2  text-gray-500 ">
             <div>Already have an account?</div>
-            <div className="underline cursor-pointer">Login</div>
+            <Link to={"/login"} className="underline cursor-pointer">
+              Login
+            </Link>
           </div>
         </div>
       </div>

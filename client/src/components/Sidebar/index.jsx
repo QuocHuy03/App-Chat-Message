@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useContext } from "react";
+import { AppContext } from "../../contexts/AppContextProvider";
 
 export default function Sidebar() {
+  const { isUser } = useContext(AppContext);
   return (
     <div className=" hidden  lg:fixed  lg:inset-y-0  lg:left-0  lg:z-40  lg:w-20  xl:px-6 lg:overflow-y-auto  lg:bg-white  lg:border-r-[1px] lg:pb-4 lg:flex lg:flex-col justify-between ">
       <nav className="mt-4 flex flex-col justify-between">
@@ -124,8 +126,9 @@ export default function Sidebar() {
                 decoding="async"
                 data-nimg="fill"
                 sizes="100vw"
-                srcSet="/_next/image?url=https%3A%2F%2Flh3.googleusercontent.com%2Fa%2FAAcHTtf2wF_kxcFFzolCTNFJHUZgyMBf94fw1uBhmMnGO0Lz%3Ds96-c&w=640&q=75 640w, /_next/image?url=https%3A%2F%2Flh3.googleusercontent.com%2Fa%2FAAcHTtf2wF_kxcFFzolCTNFJHUZgyMBf94fw1uBhmMnGO0Lz%3Ds96-c&w=750&q=75 750w, /_next/image?url=https%3A%2F%2Flh3.googleusercontent.com%2Fa%2FAAcHTtf2wF_kxcFFzolCTNFJHUZgyMBf94fw1uBhmMnGO0Lz%3Ds96-c&w=828&q=75 828w, /_next/image?url=https%3A%2F%2Flh3.googleusercontent.com%2Fa%2FAAcHTtf2wF_kxcFFzolCTNFJHUZgyMBf94fw1uBhmMnGO0Lz%3Ds96-c&w=1080&q=75 1080w, /_next/image?url=https%3A%2F%2Flh3.googleusercontent.com%2Fa%2FAAcHTtf2wF_kxcFFzolCTNFJHUZgyMBf94fw1uBhmMnGO0Lz%3Ds96-c&w=1200&q=75 1200w, /_next/image?url=https%3A%2F%2Flh3.googleusercontent.com%2Fa%2FAAcHTtf2wF_kxcFFzolCTNFJHUZgyMBf94fw1uBhmMnGO0Lz%3Ds96-c&w=1920&q=75 1920w, /_next/image?url=https%3A%2F%2Flh3.googleusercontent.com%2Fa%2FAAcHTtf2wF_kxcFFzolCTNFJHUZgyMBf94fw1uBhmMnGO0Lz%3Ds96-c&w=2048&q=75 2048w, /_next/image?url=https%3A%2F%2Flh3.googleusercontent.com%2Fa%2FAAcHTtf2wF_kxcFFzolCTNFJHUZgyMBf94fw1uBhmMnGO0Lz%3Ds96-c&w=3840&q=75 3840w"
-                src="/_next/image?url=https%3A%2F%2Flh3.googleusercontent.com%2Fa%2FAAcHTtf2wF_kxcFFzolCTNFJHUZgyMBf94fw1uBhmMnGO0Lz%3Ds96-c&w=3840&q=75"
+                src={`https://ui-avatars.com/api/name=${
+                  isUser ? isUser.username : "huydev"
+                }`}
                 style={{
                   position: "absolute",
                   height: "100%",

@@ -4,7 +4,7 @@ import { httpApi } from "../env";
 class Http {
   constructor() {
     this.huydev = axios.create({
-      baseURL: `${httpApi}/api/web`,
+      baseURL: `${httpApi}/api`,
       timeout: 10000,
       headers: {
         "Content-Type": "application/json",
@@ -31,8 +31,7 @@ class Http {
       const response = await this.huydev.get(url, { params });
       return response.data;
     } catch (error) {
-      console.error(error);
-      throw new Error("Failed to make GET request.");
+      return error.response.data;
     }
   }
 
@@ -41,8 +40,7 @@ class Http {
       const response = await this.huydev.post(url, data);
       return response.data;
     } catch (error) {
-      console.error(error);
-      throw new Error("Failed to make POST request.");
+      return error.response.data;
     }
   }
 
@@ -51,8 +49,7 @@ class Http {
       const response = await this.huydev.put(url, { data, slug });
       return response.data;
     } catch (error) {
-      console.error(error);
-      throw new Error("Failed to make PUT request.");
+      return error.response.data;
     }
   }
 
@@ -61,8 +58,7 @@ class Http {
       const response = await this.huydev.delete(url, { data: { id } });
       return response.data;
     } catch (error) {
-      console.error(error);
-      throw new Error("Failed to make DELETE request.");
+      return error.response;
     }
   }
 }
