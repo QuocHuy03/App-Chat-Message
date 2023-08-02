@@ -1,7 +1,17 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import Sidebar from "../Sidebar";
+import { AppContext } from "../../contexts/AppContextProvider";
+import { useNavigate } from "react-router-dom";
 
 export default function Layout({ children }) {
+  const navigate = useNavigate();
+  const { onlineUsers } = useContext(AppContext);
+  const [selectedUser, setSelectedUser] = useState(null);
+
+  const handleUserClick = (item) => {
+    setSelectedUser(item);
+    navigate(`/chat/${item}`);
+  };
   return (
     <>
       <Sidebar />
@@ -44,8 +54,12 @@ export default function Layout({ children }) {
                   </svg>
                 </div>
               </div>
-              <div
-                className="
+              {onlineUsers?.length > 0 ? (
+                onlineUsers.map((item, index) => (
+                  <div
+                    key={index}
+                    onClick={() => handleUserClick(item)}
+                    className="mt-2
   w-full 
   relative 
   flex 
@@ -57,46 +71,49 @@ export default function Layout({ children }) {
   transition
   cursor-pointer
    bg-neutral-100"
-              >
-                <div className="relative">
-                  <div className=" relative inline-block rounded-full overflow-hidden h-9 w-9 md:h-11 md:w-11 ">
-                    <img
-                      alt="Avatar"
-                      loading="lazy"
-                      decoding="async"
-                      data-nimg="fill"
-                      sizes="100vw"
-                      srcSet="/_next/image?url=https%3A%2F%2Flh3.googleusercontent.com%2Fa%2FAAcHTteL4tQvYv_Vrf8SvgND7zo_-AKrPmpWksHiaOqrGtev7w%3Ds96-c&w=640&q=75 640w, /_next/image?url=https%3A%2F%2Flh3.googleusercontent.com%2Fa%2FAAcHTteL4tQvYv_Vrf8SvgND7zo_-AKrPmpWksHiaOqrGtev7w%3Ds96-c&w=750&q=75 750w, /_next/image?url=https%3A%2F%2Flh3.googleusercontent.com%2Fa%2FAAcHTteL4tQvYv_Vrf8SvgND7zo_-AKrPmpWksHiaOqrGtev7w%3Ds96-c&w=828&q=75 828w, /_next/image?url=https%3A%2F%2Flh3.googleusercontent.com%2Fa%2FAAcHTteL4tQvYv_Vrf8SvgND7zo_-AKrPmpWksHiaOqrGtev7w%3Ds96-c&w=1080&q=75 1080w, /_next/image?url=https%3A%2F%2Flh3.googleusercontent.com%2Fa%2FAAcHTteL4tQvYv_Vrf8SvgND7zo_-AKrPmpWksHiaOqrGtev7w%3Ds96-c&w=1200&q=75 1200w, /_next/image?url=https%3A%2F%2Flh3.googleusercontent.com%2Fa%2FAAcHTteL4tQvYv_Vrf8SvgND7zo_-AKrPmpWksHiaOqrGtev7w%3Ds96-c&w=1920&q=75 1920w, /_next/image?url=https%3A%2F%2Flh3.googleusercontent.com%2Fa%2FAAcHTteL4tQvYv_Vrf8SvgND7zo_-AKrPmpWksHiaOqrGtev7w%3Ds96-c&w=2048&q=75 2048w, /_next/image?url=https%3A%2F%2Flh3.googleusercontent.com%2Fa%2FAAcHTteL4tQvYv_Vrf8SvgND7zo_-AKrPmpWksHiaOqrGtev7w%3Ds96-c&w=3840&q=75 3840w"
-                      src="/_next/image?url=https%3A%2F%2Flh3.googleusercontent.com%2Fa%2FAAcHTteL4tQvYv_Vrf8SvgND7zo_-AKrPmpWksHiaOqrGtev7w%3Ds96-c&w=3840&q=75"
-                      style={{
-                        position: "absolute",
-                        height: "100%",
-                        width: "100%",
-                        inset: 0,
-                        color: "transparent",
-                      }}
-                    />
-                  </div>
-                </div>
-                <div className="min-w-0 flex-1">
-                  <div className="focus:outline-none">
-                    <span className="absolute inset-0" aria-hidden="true" />
-                    <div className="flex justify-between items-center mb-1">
-                      <p className="text-md font-medium text-gray-900">
-                        Bảo Đinh Gia
-                      </p>
+                  >
+                    <div className="relative">
+                      <div className=" relative inline-block rounded-full overflow-hidden h-9 w-9 md:h-11 md:w-11 ">
+                        <img
+                          alt="Avatar"
+                          loading="lazy"
+                          decoding="async"
+                          data-nimg="fill"
+                          sizes="100vw"
+                          src={`https://ui-avatars.com/api/name=${item}`}
+                          style={{
+                            position: "absolute",
+                            height: "100%",
+                            width: "100%",
+                            inset: 0,
+                            color: "transparent",
+                          }}
+                        />
+                      </div>
                     </div>
-                    <p
-                      className="
+                    <div className="min-w-0 flex-1">
+                      <div className="focus:outline-none">
+                        <span className="absolute inset-0" aria-hidden="true" />
+                        <div className="flex justify-between items-center mb-1">
+                          <p className="text-md font-medium text-gray-900">
+                            {item}
+                          </p>
+                        </div>
+                        <p
+                          className="
         truncate 
         text-sm
          text-black font-medium"
-                    >
-                      Started a conversation
-                    </p>
+                        >
+                          Started a conversation
+                        </p>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
+                ))
+              ) : (
+                <p>Loading ...</p>
+              )}
             </div>
           </aside>
 

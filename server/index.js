@@ -19,8 +19,8 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-
-socketController.initSocketIO(server);
+const onlineUsers = new Map();
+socketController.initSocketIO(server,onlineUsers);
 const useRouter = require("./routes/user.route");
 
 app.use(bodyParser.urlencoded({ extended: true }));

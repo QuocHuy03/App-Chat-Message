@@ -2,16 +2,18 @@ import React, { useContext, useEffect, useState } from "react";
 import Layout from "../../components/Layout";
 import { AppContext } from "../../contexts/AppContextProvider";
 import ScrollToBottom from "react-scroll-to-bottom";
+import { useParams } from "react-router-dom";
 
 export default function Message() {
-  const { socket } = useContext(AppContext);
+  const { socket, isUser } = useContext(AppContext);
+  const { id } = useParams();
   const [currentMessage, setCurrentMessage] = useState("");
   const [messageList, setMessageList] = useState([]);
 
   const sendMessage = async () => {
     if (currentMessage !== "") {
       const messageData = {
-        author: username,
+        author: isUser?.username,
         message: currentMessage,
         time:
           new Date(Date.now()).getHours() +
@@ -26,6 +28,13 @@ export default function Message() {
   };
 
   useEffect(() => {
+    socket.emit("create_chat", {
+      currentUser: id,
+      user: isUser._id,
+    });
+  }, [id, socket]);
+
+  useEffect(() => {
     socket.on("receive_message", (data) => {
       setMessageList((list) => [...list, data]);
     });
@@ -34,13 +43,6 @@ export default function Message() {
   return (
     <Layout>
       <div className="lg:pl-80 h-full" style={{ height: "100vh" }}>
-        {/* <div className=" px-4 py-10 sm:px-6 lg:px-8 h-full flex justify-center  items-center bg-gray-100 ">
-          <div className="text-center items-center flex flex-col">
-            <h3 className=" mt-2 text-2xl font-semibold text-gray-900 ">
-              Select a chat or start a new converstation
-            </h3>
-          </div>
-        </div> */}
         <div className="h-full flex flex-col">
           <div className="bg-white w-full  flex  border-b-[1px]  sm:px-4  py-3  px-4  lg:px-6  justify-between  items-center  shadow-sm">
             <div className="flex gap-3 items-center">
@@ -112,13 +114,13 @@ export default function Message() {
           </div>
           <ScrollToBottom className="h-screen">
             <div className="flex-1 overflow-y-auto">
-              {messageList.map((messageContent) => (
-                <>
+              {messageList.map((messageContent, index) => (
+                <React.Fragment key={index}>
                   <div
                     className={
-                      username === messageContent.author
-                        ? "flex gap-3 p-4"
-                        : "flex gap-3 p-4 justify-end"
+                      isUser?.username === messageContent.author
+                        ? "flex gap-3 p-4 justify-end"
+                        : "flex gap-3 p-4"
                     }
                   >
                     <div className="order-2">
@@ -194,7 +196,7 @@ export default function Message() {
             </div> */}
 
                   <div className="pt-24" />
-                </>
+                </React.Fragment>
               ))}
             </div>
           </ScrollToBottom>

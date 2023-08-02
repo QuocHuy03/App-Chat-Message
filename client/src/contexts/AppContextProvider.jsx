@@ -7,21 +7,52 @@ import { httpApi } from "../env";
 export const AppContext = createContext({});
 
 export function AppContextProvider({ children }) {
-  const socket = io(httpApi);
+  const [socket, setSocket] = useState(null);
   const { user } = useSelector((state) => state.auth);
-  const [isUser, setIsUser] = useState();
+  const [isUser, setIsUser] = useState(null);
+  const [onlineUsers, setOnlineUsers] = useState();
+
+  useEffect(() => {
+    const socketInstance = io(httpApi);
+    setSocket(socketInstance);
+    // unmouht
+    return () => {
+      socketInstance.disconnect();
+    };
+  }, []);
+
   useEffect(() => {
     if (user) {
       const decode = jwt_decode(user.accessToken);
       setIsUser(decode.user);
+    } else {
+      setIsUser(null);
     }
   }, [user]);
+
+  useEffect(() => {
+    if (isUser && isUser.username) {
+      socket.emit("user_login", isUser.username);
+    }
+  }, [socket, isUser]);
+
+  useEffect(() => {
+    if (socket) {
+      socket.on("update_online_users", (users) => {
+        const filteredUsers = users.filter(
+          (username) => username !== isUser.username
+        );
+        setOnlineUsers(filteredUsers);
+      });
+    }
+  }, [socket]);
   return (
     <AppContext.Provider
       value={{
         user,
         socket,
         isUser,
+        onlineUsers,
       }}
     >
       {children}

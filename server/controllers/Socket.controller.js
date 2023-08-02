@@ -1,6 +1,6 @@
 const { Server } = require("socket.io");
 
-exports.initSocketIO = (server) => {
+exports.initSocketIO = (server, onlineUsers) => {
   const io = new Server(server, {
     cors: {
       origin: process.env.URL_CLIENT,
@@ -9,6 +9,11 @@ exports.initSocketIO = (server) => {
   });
   io.on("connection", (socket) => {
     console.log(`User Connected: ${socket.id}`);
+
+    socket.on("user_login", (username) => {
+      onlineUsers.set(socket.id, username);
+      io.emit("update_online_users", Array.from(onlineUsers.values()));
+    });
 
     socket.on("join_room", (data) => {
       socket.join(data);
@@ -20,7 +25,12 @@ exports.initSocketIO = (server) => {
     });
 
     socket.on("disconnect", () => {
-      console.log("User Disconnected", socket.id);
+      const username = onlineUsers.get(socket.id);
+      if (username) {
+        onlineUsers.delete(socket.id);
+        io.emit("update_online_users", Array.from(onlineUsers.values()));
+        console.log("Client disconnected");
+      }
     });
   });
 };
