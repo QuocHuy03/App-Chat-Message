@@ -1,7 +1,36 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Layout from "../../components/Layout";
+import { AppContext } from "../../contexts/AppContextProvider";
+import ScrollToBottom from "react-scroll-to-bottom";
 
 export default function Message() {
+  const { socket } = useContext(AppContext);
+  const [currentMessage, setCurrentMessage] = useState("");
+  const [messageList, setMessageList] = useState([]);
+
+  const sendMessage = async () => {
+    if (currentMessage !== "") {
+      const messageData = {
+        author: username,
+        message: currentMessage,
+        time:
+          new Date(Date.now()).getHours() +
+          ":" +
+          new Date(Date.now()).getMinutes(),
+      };
+
+      await socket.emit("send_message", messageData);
+      setMessageList((list) => [...list, messageData]);
+      setCurrentMessage("");
+    }
+  };
+
+  useEffect(() => {
+    socket.on("receive_message", (data) => {
+      setMessageList((list) => [...list, data]);
+    });
+  }, [socket]);
+
   return (
     <Layout>
       <div className="lg:pl-80 h-full" style={{ height: "100vh" }}>
@@ -81,43 +110,55 @@ export default function Message() {
               />
             </svg>
           </div>
-          <div className="flex-1 overflow-y-auto">
-            <div className="flex gap-3 p-4 justify-end">
-              <div className="order-2">
-                <div className="relative">
-                  <div className=" relative inline-block rounded-full overflow-hidden h-9 w-9 md:h-11 md:w-11 ">
-                    <img
-                      alt="Avatar"
-                      loading="lazy"
-                      decoding="async"
-                      data-nimg="fill"
-                      sizes="100vw"
-                      srcSet="/_next/image?url=https%3A%2F%2Flh3.googleusercontent.com%2Fa%2FAAcHTtf2wF_kxcFFzolCTNFJHUZgyMBf94fw1uBhmMnGO0Lz%3Ds96-c&w=640&q=75 640w, /_next/image?url=https%3A%2F%2Flh3.googleusercontent.com%2Fa%2FAAcHTtf2wF_kxcFFzolCTNFJHUZgyMBf94fw1uBhmMnGO0Lz%3Ds96-c&w=750&q=75 750w, /_next/image?url=https%3A%2F%2Flh3.googleusercontent.com%2Fa%2FAAcHTtf2wF_kxcFFzolCTNFJHUZgyMBf94fw1uBhmMnGO0Lz%3Ds96-c&w=828&q=75 828w, /_next/image?url=https%3A%2F%2Flh3.googleusercontent.com%2Fa%2FAAcHTtf2wF_kxcFFzolCTNFJHUZgyMBf94fw1uBhmMnGO0Lz%3Ds96-c&w=1080&q=75 1080w, /_next/image?url=https%3A%2F%2Flh3.googleusercontent.com%2Fa%2FAAcHTtf2wF_kxcFFzolCTNFJHUZgyMBf94fw1uBhmMnGO0Lz%3Ds96-c&w=1200&q=75 1200w, /_next/image?url=https%3A%2F%2Flh3.googleusercontent.com%2Fa%2FAAcHTtf2wF_kxcFFzolCTNFJHUZgyMBf94fw1uBhmMnGO0Lz%3Ds96-c&w=1920&q=75 1920w, /_next/image?url=https%3A%2F%2Flh3.googleusercontent.com%2Fa%2FAAcHTtf2wF_kxcFFzolCTNFJHUZgyMBf94fw1uBhmMnGO0Lz%3Ds96-c&w=2048&q=75 2048w, /_next/image?url=https%3A%2F%2Flh3.googleusercontent.com%2Fa%2FAAcHTtf2wF_kxcFFzolCTNFJHUZgyMBf94fw1uBhmMnGO0Lz%3Ds96-c&w=3840&q=75 3840w"
-                      src="/_next/image?url=https%3A%2F%2Flh3.googleusercontent.com%2Fa%2FAAcHTtf2wF_kxcFFzolCTNFJHUZgyMBf94fw1uBhmMnGO0Lz%3Ds96-c&w=3840&q=75"
-                      style={{
-                        position: "absolute",
-                        height: "100%",
-                        width: "100%",
-                        inset: 0,
-                        color: "transparent",
-                      }}
-                    />
+          <ScrollToBottom className="h-screen">
+            <div className="flex-1 overflow-y-auto">
+              {messageList.map((messageContent) => (
+                <>
+                  <div
+                    className={
+                      username === messageContent.author
+                        ? "flex gap-3 p-4"
+                        : "flex gap-3 p-4 justify-end"
+                    }
+                  >
+                    <div className="order-2">
+                      <div className="relative">
+                        <div className=" relative inline-block rounded-full overflow-hidden h-9 w-9 md:h-11 md:w-11 ">
+                          <img
+                            alt="Avatar"
+                            loading="lazy"
+                            decoding="async"
+                            data-nimg="fill"
+                            sizes="100vw"
+                            src={`https://ui-avatars.com/api/name=${messageContent.author}`}
+                            style={{
+                              position: "absolute",
+                              height: "100%",
+                              width: "100%",
+                              inset: 0,
+                              color: "transparent",
+                            }}
+                          />
+                        </div>
+                        <span className=" absolute  block  rounded-full bg-green-500 ring-2 ring-white top-0 right-0 h-2 w-2 md:h-3 md:w-3 " />
+                      </div>
+                    </div>
+                    <div className="flex flex-col gap-2  items-end">
+                      <div className=" flex items-center gap-1">
+                        <div className="text-sm text-gray-500">
+                          {messageContent.author}
+                        </div>
+                        <div className="text-xs text-gray-400">
+                          {messageContent.time}
+                        </div>
+                      </div>
+                      <div className="text-sm w-fit overflow-hidden bg-sky-500 text-white rounded-full py-2 px-3">
+                        <div>{messageContent.message}</div>
+                      </div>
+                    </div>
                   </div>
-                  <span className=" absolute  block  rounded-full bg-green-500 ring-2 ring-white top-0 right-0 h-2 w-2 md:h-3 md:w-3 " />
-                </div>
-              </div>
-              <div className="flex flex-col gap-2  items-end">
-                <div className=" flex items-center gap-1">
-                  <div className="text-sm text-gray-500">Quoc Huy Le</div>
-                  <div className="text-xs text-gray-400">10:26 PM</div>
-                </div>
-                <div className="text-sm w-fit overflow-hidden bg-sky-500 text-white rounded-full py-2 px-3">
-                  <div>123</div>
-                </div>
-              </div>
-            </div>
 
-            {/* <div className="flex gap-3 p-4">
+                  {/* <div className="flex gap-3 p-4">
               <div className>
                 <div className="relative">
                   <div className=" relative inline-block rounded-full overflow-hidden h-9 w-9 md:h-11 md:w-11 ">
@@ -152,8 +193,11 @@ export default function Message() {
               </div>
             </div> */}
 
-            <div className="pt-24" />
-          </div>
+                  <div className="pt-24" />
+                </>
+              ))}
+            </div>
+          </ScrollToBottom>
 
           <div className=" py-4  px-4  bg-white  border-t  flex  items-center  gap-2  lg:gap-4  w-full ">
             <button>
@@ -175,18 +219,23 @@ export default function Message() {
                 />
               </svg>
             </button>
-            <form className="flex items-center gap-2 lg:gap-4 w-full">
+            <div className="flex items-center gap-2 lg:gap-4 w-full">
               <div className="relative w-full ">
                 <input
                   id="message"
-                  autoComplete="message"
-                  placeholder="Write a message"
+                  value={currentMessage}
+                  onChange={(event) => {
+                    setCurrentMessage(event.target.value);
+                  }}
+                  onKeyPress={(event) => {
+                    event.key === "Enter" && sendMessage();
+                  }}
                   className=" text-black font-light py-2 px-4 bg-neutral-100 w-full rounded-full focus:outline-none "
                   name="message"
                 />
               </div>
               <button
-                type="submit"
+                onClick={sendMessage}
                 className=" rounded-full  p-2  bg-sky-500  cursor-pointer  hover:bg-sky-600  transition "
               >
                 <svg
@@ -203,7 +252,7 @@ export default function Message() {
                   <path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z" />
                 </svg>
               </button>
-            </form>
+            </div>
           </div>
         </div>
       </div>

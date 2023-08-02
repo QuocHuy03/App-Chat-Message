@@ -6,4 +6,7 @@ router.post("/register", UserControllers.register);
 router.post("/login", UserControllers.login);
 router.get("/verifyAccessToken", UserControllers.verifyAccessToken);
 
+
+
+
 module.exports = router;

@@ -1,8 +1,15 @@
 import React, { useContext } from "react";
 import { AppContext } from "../../contexts/AppContextProvider";
+import { useDispatch } from "react-redux";
+import { logout } from "../../stores/authSlice";
 
 export default function Sidebar() {
   const { isUser } = useContext(AppContext);
+  const dispatch = useDispatch();
+  const handleLogout = () => {
+    localStorage.clear();
+    dispatch(logout());
+  };
   return (
     <div className=" hidden  lg:fixed  lg:inset-y-0  lg:left-0  lg:z-40  lg:w-20  xl:px-6 lg:overflow-y-auto  lg:bg-white  lg:border-r-[1px] lg:pb-4 lg:flex lg:flex-col justify-between ">
       <nav className="mt-4 flex flex-col justify-between">
@@ -79,6 +86,7 @@ export default function Sidebar() {
           </li>
           <li>
             <a
+              onClick={handleLogout}
               className="
   group
   flex
