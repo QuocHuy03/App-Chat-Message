@@ -6,7 +6,6 @@ import Chat from "./pages/Chat";
 import NotPage from "./pages/NotPage";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import Conversations from "./pages/Conversations";
 
 function App() {
   const { user } = useContext(AppContext);
@@ -24,8 +23,7 @@ function App() {
     <Routes>
       {user ? (
         <>
-          <Route exact path="/chat" element={<Conversations />} />
-          <Route path="/chat/:id" element={<Chat />} />
+          <Route path="/chat" element={<Chat />} />
           <Route path="*" element={<NotPage />} />
         </>
       ) : (

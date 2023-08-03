@@ -1,17 +1,11 @@
 import React, { useContext, useState } from "react";
 import Sidebar from "../Sidebar";
 import { AppContext } from "../../contexts/AppContextProvider";
-import { useNavigate } from "react-router-dom";
+import Loading from "../Loading";
 
 export default function Layout({ children }) {
-  const navigate = useNavigate();
   const { onlineUsers } = useContext(AppContext);
-  const [selectedUser, setSelectedUser] = useState(null);
 
-  const handleUserClick = (item) => {
-    setSelectedUser(item);
-    navigate(`/chat/${item}`);
-  };
   return (
     <>
       <Sidebar />
@@ -34,7 +28,7 @@ export default function Layout({ children }) {
             <div className="px-5">
               <div className="flex justify-between mb-4 pt-4">
                 <div className="text-2xl font-bold text-neutral-800">
-                  Messages
+                  Online
                 </div>
                 <div className=" rounded-full  p-2  bg-gray-100  text-gray-600  cursor-pointer  hover:opacity-75  transition ">
                   <svg
@@ -58,7 +52,6 @@ export default function Layout({ children }) {
                 onlineUsers.map((item, index) => (
                   <div
                     key={index}
-                    onClick={() => handleUserClick(item)}
                     className="mt-2
   w-full 
   relative 
@@ -112,7 +105,7 @@ export default function Layout({ children }) {
                   </div>
                 ))
               ) : (
-                <p>Loading ...</p>
+                <Loading />
               )}
             </div>
           </aside>

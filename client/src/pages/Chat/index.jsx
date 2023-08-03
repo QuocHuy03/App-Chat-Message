@@ -1,8 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import Layout from "../../components/Layout";
 import { AppContext } from "../../contexts/AppContextProvider";
-import ScrollToBottom from "react-scroll-to-bottom";
-import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getUserByID } from "../../services/UserService";
 import { getAllChat } from "../../services/ChatService";
@@ -10,17 +8,8 @@ import { formattedTime } from "../../env";
 
 export default function Message() {
   const { socket, isUser } = useContext(AppContext);
-  const { id } = useParams();
   const [currentMessage, setCurrentMessage] = useState("");
   const [messageList, setMessageList] = useState([]);
-  const { data, isLoading } = useQuery(
-    ["getByUser", id],
-    () => getUserByID(id),
-    {
-      staleTime: 500,
-      enabled: !!id,
-    }
-  );
 
   const sendMessage = async () => {
     if (currentMessage !== "") {
@@ -35,10 +24,8 @@ export default function Message() {
   };
 
   const getAllChatData = async () => {
-    if (id) {
-      const fetch = await getAllChat();
-      setMessageList(fetch);
-    }
+    const fetch = await getAllChat();
+    setMessageList(fetch);
   };
 
   useEffect(() => {
@@ -75,10 +62,74 @@ export default function Message() {
                   />
                 </svg>
               </a>
-              <div className="relative">
-                <div className=" relative inline-block rounded-full overflow-hidden h-9 w-9 md:h-11 md:w-11 ">
+              <div className=" relative h-11 w-11 ">
+                <div
+                  className="
+  absolute
+  inline-block
+  rounded-full
+  overflow-hidden
+  h-[21px]
+  w-[21px]
+  top-0 left-[12px]
+  "
+                >
                   <img
-                    alt="Avatar"
+                    alt="Avata"
+                    loading="lazy"
+                    decoding="async"
+                    data-nimg="fill"
+                    sizes="100vw"
+                    src="/_next/image?url=https%3A%2F%2Favatars.githubusercontent.com%2Fu%2F97956803%3Fv%3D4&w=3840&q=75"
+                    style={{
+                      position: "absolute",
+                      height: "100%",
+                      width: "100%",
+                      inset: 0,
+                      color: "transparent",
+                    }}
+                  />
+                </div>
+                <div
+                  className="
+  absolute
+  inline-block
+  rounded-full
+  overflow-hidden
+  h-[21px]
+  w-[21px]
+  bottom-0
+  "
+                >
+                  <img
+                    alt="Avata"
+                    loading="lazy"
+                    decoding="async"
+                    data-nimg="fill"
+                    sizes="100vw"
+                    src="/_next/image?url=https%3A%2F%2Flh3.googleusercontent.com%2Fa%2FAAcHTtcfkvyyKdE0E3V9uMfI8Qp14Nj3sQ3Oo2FDDr4DoxxJ%3Ds96-c&w=3840&q=75"
+                    style={{
+                      position: "absolute",
+                      height: "100%",
+                      width: "100%",
+                      inset: 0,
+                      color: "transparent",
+                    }}
+                  />
+                </div>
+                <div
+                  className="
+  absolute
+  inline-block
+  rounded-full
+  overflow-hidden
+  h-[21px]
+  w-[21px]
+  bottom-0 right-0
+  "
+                >
+                  <img
+                    alt="Avata"
                     loading="lazy"
                     decoding="async"
                     data-nimg="fill"
@@ -95,6 +146,7 @@ export default function Message() {
                   />
                 </div>
               </div>
+
               <div className="flex flex-col">
                 <div>Messages</div>
                 <div className=" text-sm  font-light text-neutral-500 ">
@@ -120,65 +172,68 @@ export default function Message() {
               />
             </svg>
           </div>
-      
-            <div className="flex-1 overflow-y-auto h-screen">
-              {messageList?.map((messageContent, index) => (
-                <React.Fragment key={index}>
+
+          <div className="flex-1 overflow-y-auto h-screen">
+            {messageList?.map((messageContent, index) => (
+              <React.Fragment key={index}>
+                <div
+                  className={
+                    isUser?.username === messageContent.author
+                      ? "flex gap-3 p-4 justify-end"
+                      : "flex gap-3 p-4"
+                  }
+                >
                   <div
                     className={
                       isUser?.username === messageContent.author
-                        ? "flex gap-3 p-4 justify-end"
-                        : "flex gap-3 p-4"
-                    }
-                  >
-                    <div className={
-                      isUser?.username === messageContent.author
                         ? "order-2"
                         : ""
-                    }>
-                      <div className="relative">
-                        <div className=" relative inline-block rounded-full overflow-hidden h-9 w-9 md:h-11 md:w-11 ">
-                          <img
-                            alt="Avatar"
-                            loading="lazy"
-                            decoding="async"
-                            data-nimg="fill"
-                            sizes="100vw"
-                            src={`https://ui-avatars.com/api/name=${messageContent.author}`}
-                            style={{
-                              position: "absolute",
-                              height: "100%",
-                              width: "100%",
-                              inset: 0,
-                              color: "transparent",
-                            }}
-                          />
-                        </div>
-                        <span className=" absolute  block  rounded-full bg-green-500 ring-2 ring-white top-0 right-0 h-2 w-2 md:h-3 md:w-3 " />
+                    }
+                  >
+                    <div className="relative">
+                      <div className=" relative inline-block rounded-full overflow-hidden h-9 w-9 md:h-11 md:w-11 ">
+                        <img
+                          alt="Avatar"
+                          loading="lazy"
+                          decoding="async"
+                          data-nimg="fill"
+                          sizes="100vw"
+                          src={`https://ui-avatars.com/api/name=${messageContent.author}`}
+                          style={{
+                            position: "absolute",
+                            height: "100%",
+                            width: "100%",
+                            inset: 0,
+                            color: "transparent",
+                          }}
+                        />
                       </div>
+                      <span className=" absolute  block  rounded-full bg-green-500 ring-2 ring-white top-0 right-0 h-2 w-2 md:h-3 md:w-3 " />
                     </div>
-                    <div className={
+                  </div>
+                  <div
+                    className={
                       isUser?.username === messageContent.author
                         ? "flex flex-col gap-2 items-end"
                         : "flex flex-col gap-2"
-                    }>
-                      <div className=" flex items-center gap-1">
-                        <div className="text-sm text-gray-500">
-                          {messageContent.author}
-                        </div>
-                        <div className="text-xs text-gray-400">
-                          {formattedTime(messageContent.createdAt)}
-                        </div>
+                    }
+                  >
+                    <div className=" flex items-center gap-1">
+                      <div className="text-sm text-gray-500">
+                        {messageContent.author}
                       </div>
-                      <div className="text-sm w-fit overflow-hidden bg-sky-500 text-white rounded-full py-2 px-3">
-                        <div>{messageContent.content}</div>
+                      <div className="text-xs text-gray-400">
+                        {formattedTime(messageContent.createdAt)}
                       </div>
                     </div>
+                    <div className="text-sm w-fit overflow-hidden bg-sky-500 text-white rounded-full py-2 px-3">
+                      <div>{messageContent.content}</div>
+                    </div>
                   </div>
-                </React.Fragment>
-              ))}
-            </div>
-     
+                </div>
+              </React.Fragment>
+            ))}
+          </div>
 
           <div className=" py-4  px-4  bg-white  border-t  flex  items-center  gap-2  lg:gap-4  w-full ">
             <button>
