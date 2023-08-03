@@ -1,4 +1,5 @@
 const { Server } = require("socket.io");
+const Chats = require("../models/Chat.model");
 
 exports.initSocketIO = (server, onlineUsers) => {
   const io = new Server(server, {
@@ -20,8 +21,18 @@ exports.initSocketIO = (server, onlineUsers) => {
       console.log(`User with ID: ${socket.id} joined room: ${data}`);
     });
 
-    socket.on("send_message", (data) => {
-      socket.to(data.room).emit("receive_message", data);
+    socket.on("send_message", async (data) => {
+      const newChat = new Chats(data);
+      await newChat.save().then((result) => {
+        console.log(result)
+        // io.emit("SERVER_RETURN_ALL_MESSAGE", {
+        //   content: result.content,
+        //   username: result.username,
+        //   avatar: result.avatar,
+        //   createdAt: moment(data.createAt).format("LLL"),
+        // });
+        socket.to(result).emit("receive_message", result);
+      });
     });
 
     socket.on("disconnect", () => {

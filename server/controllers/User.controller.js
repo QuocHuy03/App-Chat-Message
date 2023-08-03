@@ -102,3 +102,20 @@ exports.verifyAccessToken = async (req, res, next) => {
     return res.status(401).json({ message: "Invalid Access Token" });
   }
 };
+
+exports.getUserById = async (req, res, next) => {
+  try {
+    const username = req.params.id;
+    const user = await User.findOne({ username: username });
+    if (!user) {
+      res.status(500).json({
+        message: "Không có dữ liệu",
+      });
+    } else {
+      res.status(200).json(user);
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ status: false, message: "Lỗi hệ thống" });
+  }
+};

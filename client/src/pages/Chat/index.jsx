@@ -3,22 +3,34 @@ import Layout from "../../components/Layout";
 import { AppContext } from "../../contexts/AppContextProvider";
 import ScrollToBottom from "react-scroll-to-bottom";
 import { useParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { getUserByID } from "../../services/UserService";
 
 export default function Message() {
   const { socket, isUser } = useContext(AppContext);
   const { id } = useParams();
   const [currentMessage, setCurrentMessage] = useState("");
   const [messageList, setMessageList] = useState([]);
+  const { data, isLoading } = useQuery(
+    ["getByUser", id],
+    () => getUserByID(id),
+    {
+      staleTime: 500,
+      enabled: !!id,
+    }
+  );
 
   const sendMessage = async () => {
     if (currentMessage !== "") {
       const messageData = {
+        userID: isUser?._id,
         author: isUser?.username,
-        message: currentMessage,
-        time:
-          new Date(Date.now()).getHours() +
-          ":" +
-          new Date(Date.now()).getMinutes(),
+        content: currentMessage,
+        userIDChat: data?._id,
+        // time:
+        //   new Date(Date.now()).getHours() +
+        //   ":" +
+        //   new Date(Date.now()).getMinutes(),
       };
 
       await socket.emit("send_message", messageData);
@@ -28,14 +40,8 @@ export default function Message() {
   };
 
   useEffect(() => {
-    socket.emit("create_chat", {
-      currentUser: id,
-      user: isUser._id,
-    });
-  }, [id, socket]);
-
-  useEffect(() => {
-    socket.on("receive_message", (data) => {
+    socket?.on("receive_message", (data) => {
+      console.log(data)
       setMessageList((list) => [...list, data]);
     });
   }, [socket]);
