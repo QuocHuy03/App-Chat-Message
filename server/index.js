@@ -22,7 +22,7 @@ app.use(cors(corsOptions));
 const onlineUsers = new Map();
 socketController.initSocketIO(server,onlineUsers);
 const userRouter = require("./routes/user.route");
-const chatRouter = require("./routes/user.route");
+const chatRouter = require("./routes/chat.route");
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());

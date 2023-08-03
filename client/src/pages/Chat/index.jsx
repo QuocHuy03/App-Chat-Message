@@ -5,7 +5,8 @@ import ScrollToBottom from "react-scroll-to-bottom";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getUserByID } from "../../services/UserService";
-import { getChatUser } from "../../services/ChatService";
+import { getAllChat } from "../../services/ChatService";
+import { formattedTime } from "../../env";
 
 export default function Message() {
   const { socket, isUser } = useContext(AppContext);
@@ -27,31 +28,25 @@ export default function Message() {
         userID: isUser?._id,
         author: isUser?.username,
         content: currentMessage,
-        userIDChat: data?._id,
       };
-
       await socket.emit("send_message", messageData);
-      // setMessageList((list) => [...list, messageData]);
       setCurrentMessage("");
     }
   };
 
-  const fetchChatUserID = async (userID, userIDChat) => {
-    try {
-      const fetchUser = await getChatUser(userID, userIDChat);
-      console.log(fetchUser)
-      return fetchUser;
-    } catch (error) {
-      console.error(error);
+  const getAllChatData = async () => {
+    if (id) {
+      const fetch = await getAllChat();
+      setMessageList(fetch);
     }
   };
 
   useEffect(() => {
-    socket?.on("receive_message", (data) => {
-      fetchChatUserID(data.userID, data.userIDChat);
-      // setMessageList((list) => [...list, data]);
+    getAllChatData();
+    socket?.on("receive_message", (huydev) => {
+      getAllChatData();
     });
-  }, [id]);
+  }, []);
 
   return (
     <Layout>
@@ -101,9 +96,9 @@ export default function Message() {
                 </div>
               </div>
               <div className="flex flex-col">
-                <div>Bảo Đinh Gia</div>
+                <div>Messages</div>
                 <div className=" text-sm  font-light text-neutral-500 ">
-                  Offline
+                  Online
                 </div>
               </div>
             </div>
@@ -125,9 +120,9 @@ export default function Message() {
               />
             </svg>
           </div>
-          <ScrollToBottom className="h-screen">
-            <div className="flex-1 overflow-y-auto">
-              {messageList.map((messageContent, index) => (
+      
+            <div className="flex-1 overflow-y-auto h-screen">
+              {messageList?.map((messageContent, index) => (
                 <React.Fragment key={index}>
                   <div
                     className={
@@ -136,7 +131,11 @@ export default function Message() {
                         : "flex gap-3 p-4"
                     }
                   >
-                    <div className="order-2">
+                    <div className={
+                      isUser?.username === messageContent.author
+                        ? "order-2"
+                        : ""
+                    }>
                       <div className="relative">
                         <div className=" relative inline-block rounded-full overflow-hidden h-9 w-9 md:h-11 md:w-11 ">
                           <img
@@ -158,61 +157,28 @@ export default function Message() {
                         <span className=" absolute  block  rounded-full bg-green-500 ring-2 ring-white top-0 right-0 h-2 w-2 md:h-3 md:w-3 " />
                       </div>
                     </div>
-                    <div className="flex flex-col gap-2  items-end">
+                    <div className={
+                      isUser?.username === messageContent.author
+                        ? "flex flex-col gap-2 items-end"
+                        : "flex flex-col gap-2"
+                    }>
                       <div className=" flex items-center gap-1">
                         <div className="text-sm text-gray-500">
                           {messageContent.author}
                         </div>
                         <div className="text-xs text-gray-400">
-                          {messageContent.time}
+                          {formattedTime(messageContent.createdAt)}
                         </div>
                       </div>
                       <div className="text-sm w-fit overflow-hidden bg-sky-500 text-white rounded-full py-2 px-3">
-                        <div>{messageContent.message}</div>
+                        <div>{messageContent.content}</div>
                       </div>
                     </div>
                   </div>
-
-                  {/* <div className="flex gap-3 p-4">
-              <div className>
-                <div className="relative">
-                  <div className=" relative inline-block rounded-full overflow-hidden h-9 w-9 md:h-11 md:w-11 ">
-                    <img
-                      alt="Avatar"
-                      loading="lazy"
-                      decoding="async"
-                      data-nimg="fill"
-                      sizes="100vw"
-                      srcSet="/_next/image?url=https%3A%2F%2Flh3.googleusercontent.com%2Fa%2FAAcHTtf2wF_kxcFFzolCTNFJHUZgyMBf94fw1uBhmMnGO0Lz%3Ds96-c&w=640&q=75 640w, /_next/image?url=https%3A%2F%2Flh3.googleusercontent.com%2Fa%2FAAcHTtf2wF_kxcFFzolCTNFJHUZgyMBf94fw1uBhmMnGO0Lz%3Ds96-c&w=750&q=75 750w, /_next/image?url=https%3A%2F%2Flh3.googleusercontent.com%2Fa%2FAAcHTtf2wF_kxcFFzolCTNFJHUZgyMBf94fw1uBhmMnGO0Lz%3Ds96-c&w=828&q=75 828w, /_next/image?url=https%3A%2F%2Flh3.googleusercontent.com%2Fa%2FAAcHTtf2wF_kxcFFzolCTNFJHUZgyMBf94fw1uBhmMnGO0Lz%3Ds96-c&w=1080&q=75 1080w, /_next/image?url=https%3A%2F%2Flh3.googleusercontent.com%2Fa%2FAAcHTtf2wF_kxcFFzolCTNFJHUZgyMBf94fw1uBhmMnGO0Lz%3Ds96-c&w=1200&q=75 1200w, /_next/image?url=https%3A%2F%2Flh3.googleusercontent.com%2Fa%2FAAcHTtf2wF_kxcFFzolCTNFJHUZgyMBf94fw1uBhmMnGO0Lz%3Ds96-c&w=1920&q=75 1920w, /_next/image?url=https%3A%2F%2Flh3.googleusercontent.com%2Fa%2FAAcHTtf2wF_kxcFFzolCTNFJHUZgyMBf94fw1uBhmMnGO0Lz%3Ds96-c&w=2048&q=75 2048w, /_next/image?url=https%3A%2F%2Flh3.googleusercontent.com%2Fa%2FAAcHTtf2wF_kxcFFzolCTNFJHUZgyMBf94fw1uBhmMnGO0Lz%3Ds96-c&w=3840&q=75 3840w"
-                      src="/_next/image?url=https%3A%2F%2Flh3.googleusercontent.com%2Fa%2FAAcHTtf2wF_kxcFFzolCTNFJHUZgyMBf94fw1uBhmMnGO0Lz%3Ds96-c&w=3840&q=75"
-                      style={{
-                        position: "absolute",
-                        height: "100%",
-                        width: "100%",
-                        inset: 0,
-                        color: "transparent",
-                      }}
-                    />
-                  </div>
-                  <span className=" absolute  block  rounded-full bg-green-500 ring-2 ring-white top-0 right-0 h-2 w-2 md:h-3 md:w-3 " />
-                </div>
-              </div>
-              <div className="flex flex-col gap-2 ">
-                <div className=" flex items-center gap-1">
-                  <div className="text-sm text-gray-500">Quoc Huy Le</div>
-                  <div className="text-xs text-gray-400">10:26 PM</div>
-                </div>
-                <div className="text-sm w-fit overflow-hidden bg-gray-100 rounded-full py-2 px-3">
-                  <div>123</div>
-                </div>
-              </div>
-            </div> */}
-
-                  <div className="pt-24" />
                 </React.Fragment>
               ))}
             </div>
-          </ScrollToBottom>
+     
 
           <div className=" py-4  px-4  bg-white  border-t  flex  items-center  gap-2  lg:gap-4  w-full ">
             <button>

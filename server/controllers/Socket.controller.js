@@ -26,23 +26,13 @@ exports.initSocketIO = (server, onlineUsers) => {
         const newChat = new Chats(data);
         await newChat.save();
 
-        const { userID, userIDChat } = data;
+        const { userID } = data;
 
-        const chatHistory = await Chats.find({
-          $or: [
-            { userID: userID, userIDChat: userIDChat },
-            { userID: userIDChat, userIDChat: userID },
-          ],
-        }).sort({ createdAt: 1 });
+        const chatHistory = await Chats.find({ userID: userID });
 
-        console.log('Chat Nè',chatHistory);
+        console.log("Chat Nè", chatHistory);
 
-        const targetSocket = onlineUsers.get(userIDChat);
-        if (targetSocket) {
-          targetSocket.emit("receive_message", chatHistory);
-        }
-
-        socket.emit("receive_message", chatHistory);
+        io.emit("receive_message", chatHistory);
       } catch (error) {
         console.error(error);
       }
