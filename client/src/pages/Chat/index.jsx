@@ -5,6 +5,7 @@ import ScrollToBottom from "react-scroll-to-bottom";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getUserByID } from "../../services/UserService";
+import { getChatUser } from "../../services/ChatService";
 
 export default function Message() {
   const { socket, isUser } = useContext(AppContext);
@@ -27,24 +28,30 @@ export default function Message() {
         author: isUser?.username,
         content: currentMessage,
         userIDChat: data?._id,
-        // time:
-        //   new Date(Date.now()).getHours() +
-        //   ":" +
-        //   new Date(Date.now()).getMinutes(),
       };
 
       await socket.emit("send_message", messageData);
-      setMessageList((list) => [...list, messageData]);
+      // setMessageList((list) => [...list, messageData]);
       setCurrentMessage("");
+    }
+  };
+
+  const fetchChatUserID = async (userID, userIDChat) => {
+    try {
+      const fetchUser = await getChatUser(userID, userIDChat);
+      console.log(fetchUser)
+      return fetchUser;
+    } catch (error) {
+      console.error(error);
     }
   };
 
   useEffect(() => {
     socket?.on("receive_message", (data) => {
-      console.log(data)
-      setMessageList((list) => [...list, data]);
+      fetchChatUserID(data.userID, data.userIDChat);
+      // setMessageList((list) => [...list, data]);
     });
-  }, [socket]);
+  }, [id]);
 
   return (
     <Layout>

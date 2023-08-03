@@ -21,13 +21,14 @@ const corsOptions = {
 app.use(cors(corsOptions));
 const onlineUsers = new Map();
 socketController.initSocketIO(server,onlineUsers);
-const useRouter = require("./routes/user.route");
+const userRouter = require("./routes/user.route");
+const chatRouter = require("./routes/user.route");
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.use("/api/user", useRouter);
-
+app.use("/api/user", userRouter);
+app.use("/api/chat", chatRouter);
 mongoose
   .connect(process.env.MONGODB)
   .then(() => {

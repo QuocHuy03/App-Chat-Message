@@ -10,7 +10,7 @@ const postSchema = new Schema(
       type: String,
       required: true,
     },
-    username: {
+    author: {
       type: String,
       required: true,
     },

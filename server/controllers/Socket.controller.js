@@ -22,17 +22,30 @@ exports.initSocketIO = (server, onlineUsers) => {
     });
 
     socket.on("send_message", async (data) => {
-      const newChat = new Chats(data);
-      await newChat.save().then((result) => {
-        console.log(result)
-        // io.emit("SERVER_RETURN_ALL_MESSAGE", {
-        //   content: result.content,
-        //   username: result.username,
-        //   avatar: result.avatar,
-        //   createdAt: moment(data.createAt).format("LLL"),
-        // });
-        socket.to(result).emit("receive_message", result);
-      });
+      try {
+        const newChat = new Chats(data);
+        await newChat.save();
+
+        const { userID, userIDChat } = data;
+
+        const chatHistory = await Chats.find({
+          $or: [
+            { userID: userID, userIDChat: userIDChat },
+            { userID: userIDChat, userIDChat: userID },
+          ],
+        }).sort({ createdAt: 1 });
+
+        console.log('Chat Nè',chatHistory);
+
+        const targetSocket = onlineUsers.get(userIDChat);
+        if (targetSocket) {
+          targetSocket.emit("receive_message", chatHistory);
+        }
+
+        socket.emit("receive_message", chatHistory);
+      } catch (error) {
+        console.error(error);
+      }
     });
 
     socket.on("disconnect", () => {
