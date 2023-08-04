@@ -35,6 +35,8 @@ export default function Message() {
     });
   }, []);
 
+  console.log(huydev);
+
   return (
     <Layout>
       <div className="lg:pl-80 h-full" style={{ height: "100vh" }}>
