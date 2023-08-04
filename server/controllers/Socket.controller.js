@@ -30,8 +30,6 @@ exports.initSocketIO = (server, onlineUsers) => {
 
         const chatHistory = await Chats.find({ userID: userID });
 
-        console.log("Chat Nè", chatHistory);
-
         io.emit("receive_message", chatHistory);
       } catch (error) {
         console.error(error);

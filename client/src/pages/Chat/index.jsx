@@ -19,10 +19,10 @@ export default function Message() {
         content: currentMessage,
       };
       await socket.emit("send_message", messageData);
+      getAllChatData();
       setCurrentMessage("");
     }
   };
-
   const getAllChatData = async () => {
     const fetch = await getAllChat();
     setMessageList(fetch);
