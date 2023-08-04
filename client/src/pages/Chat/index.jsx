@@ -7,7 +7,7 @@ import { getAllChat } from "../../services/ChatService";
 import { formattedTime } from "../../env";
 
 export default function Message() {
-  const { socket, isUser } = useContext(AppContext);
+  const { onlineUsers, socket, isUser } = useContext(AppContext);
   const [currentMessage, setCurrentMessage] = useState("");
   const [messageList, setMessageList] = useState([]);
 
@@ -208,7 +208,16 @@ export default function Message() {
                           }}
                         />
                       </div>
-                      <span className=" absolute  block  rounded-full bg-green-500 ring-2 ring-white top-0 right-0 h-2 w-2 md:h-3 md:w-3 " />
+                      {onlineUsers?.map((item, index) => (
+                        <span
+                          key={index}
+                          className={
+                            item === messageContent.author
+                              ? "absolute block rounded-full bg-green-500 ring-2 ring-white top-0 right-0 h-2 w-2 md:h-3 md:w-3"
+                              : ""
+                          }
+                        />
+                      ))}
                     </div>
                   </div>
                   <div

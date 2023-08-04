@@ -51,7 +51,7 @@ export default function Sidebar() {
               <span className="sr-only"> Chat </span>
             </a>
           </li>
-     
+
           <li>
             <a
               onClick={handleLogout}
