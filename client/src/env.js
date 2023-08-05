@@ -1,4 +1,4 @@
-export const httpApi = "http://localhost:3000";
+export const httpApi = "https://app-chat-message.onrender.com";
 
 export const formattedTime = (dateString) => {
   const date = new Date(dateString);
