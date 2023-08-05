@@ -4,15 +4,7 @@ import { AppContext } from "../../contexts/AppContextProvider";
 import Loading from "../Loading";
 
 export default function Layout({ children }) {
-  const { onlineUsers } = useContext(AppContext);
-
-
-  const getAllUserData = async () => {
-    const fetch = await getAllUser();
-    setMessageList(fetch);
-  };
-
-
+  const { isAllUser, onlineUsers } = useContext(AppContext);
   return (
     <>
       <Sidebar />
@@ -55,8 +47,8 @@ export default function Layout({ children }) {
                   </svg>
                 </div>
               </div>
-              {onlineUsers?.length > 0 ? (
-                onlineUsers.map((item, index) => (
+              {isAllUser?.length > 0 ? (
+                isAllUser.map((item, index) => (
                   <div
                     key={index}
                     className="mt-2
@@ -80,7 +72,7 @@ export default function Layout({ children }) {
                           decoding="async"
                           data-nimg="fill"
                           sizes="100vw"
-                          src={`https://ui-avatars.com/api/name=${item}`}
+                          src={`https://ui-avatars.com/api/name=${item.username}`}
                           style={{
                             position: "absolute",
                             height: "100%",
@@ -90,23 +82,36 @@ export default function Layout({ children }) {
                           }}
                         />
                       </div>
+                      {onlineUsers?.map((huydev, index) => (
+                        <span
+                          key={index}
+                          className={
+                            huydev === item.username
+                              ? "absolute block rounded-full bg-green-500 ring-2 ring-white top-0 right-0 h-2 w-2 md:h-3 md:w-3"
+                              : ""
+                          }
+                        />
+                      ))}
                     </div>
                     <div className="min-w-0 flex-1">
                       <div className="focus:outline-none">
                         <span className="absolute inset-0" aria-hidden="true" />
                         <div className="flex justify-between items-center mb-1">
                           <p className="text-md font-medium text-gray-900">
-                            {item}
+                            {item.username}
                           </p>
                         </div>
-                        <p
-                          className="
-        truncate 
-        text-sm
-         text-black font-medium"
-                        >
-                          Started a conversation
-                        </p>
+                        {onlineUsers?.map((huydev, index) => (
+                          <p
+                            key={index}
+                            className="
+                            truncate 
+                            text-sm
+                            text-black font-medium"
+                          >
+                            {huydev === item.username ? "Online" : "Office"}
+                          </p>
+                        ))}
                       </div>
                     </div>
                   </div>

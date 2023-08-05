@@ -12,6 +12,7 @@ export function AppContextProvider({ children }) {
   const { user } = useSelector((state) => state.auth);
   const [isUser, setIsUser] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState();
+  const [isAllUser, setIsAllUser] = useState();
 
   useEffect(() => {
     const socketInstance = io(httpApi);
@@ -47,20 +48,21 @@ export function AppContextProvider({ children }) {
       });
     }
   }, [socket]);
-  
+
   const getAllUserData = async () => {
     const fetch = await getAllUser();
-    return fetch;
+    setIsAllUser(fetch);
   };
   useEffect(() => {
     getAllUserData();
-  }, [isUser]);
+  }, []);
 
   return (
     <AppContext.Provider
       value={{
         user,
         socket,
+        isAllUser,
         isUser,
         onlineUsers,
       }}
