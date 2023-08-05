@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import jwt_decode from "jwt-decode";
 import { io } from "socket.io-client";
 import { httpApi } from "../env";
+import { getAllUser } from "../services/UserService";
 
 export const AppContext = createContext({});
 
@@ -46,6 +47,15 @@ export function AppContextProvider({ children }) {
       });
     }
   }, [socket]);
+  
+  const getAllUserData = async () => {
+    const fetch = await getAllUser();
+    return fetch;
+  };
+  useEffect(() => {
+    getAllUserData();
+  }, [isUser]);
+
   return (
     <AppContext.Provider
       value={{

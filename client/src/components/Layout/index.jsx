@@ -6,6 +6,13 @@ import Loading from "../Loading";
 export default function Layout({ children }) {
   const { onlineUsers } = useContext(AppContext);
 
+
+  const getAllUserData = async () => {
+    const fetch = await getAllUser();
+    setMessageList(fetch);
+  };
+
+
   return (
     <>
       <Sidebar />

@@ -119,3 +119,19 @@ exports.getUserById = async (req, res, next) => {
     res.status(500).json({ status: false, message: "Lỗi hệ thống" });
   }
 };
+
+exports.getAllUser = async (req, res, next) => {
+  try {
+    const user = await User.find();
+    if (!user) {
+      res.status(500).json({
+        message: "Không có dữ liệu",
+      });
+    } else {
+      res.status(200).json(user);
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ status: false, message: "Lỗi hệ thống" });
+  }
+};
