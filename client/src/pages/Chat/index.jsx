@@ -6,7 +6,7 @@ import { getUserByID } from "../../services/UserService";
 import { getAllChat } from "../../services/ChatService";
 import { formattedTime } from "../../env";
 
-export default function Message() {
+export default function Chat() {
   const { onlineUsers, socket, isUser } = useContext(AppContext);
   const [currentMessage, setCurrentMessage] = useState("");
   const [messageList, setMessageList] = useState([]);
@@ -34,8 +34,6 @@ export default function Message() {
       getAllChatData();
     });
   }, []);
-
-  console.log(huydev);
 
   return (
     <Layout>
