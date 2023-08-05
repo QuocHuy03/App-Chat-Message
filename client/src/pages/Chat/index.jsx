@@ -1,8 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import Layout from "../../components/Layout";
 import { AppContext } from "../../contexts/AppContextProvider";
-import { useQuery } from "@tanstack/react-query";
-import { getUserByID } from "../../services/UserService";
 import { getAllChat } from "../../services/ChatService";
 import { formattedTime } from "../../env";
 
