@@ -102,7 +102,7 @@ export default function Layout({ children }) {
                           </p>
                         </div>
 
-                        {onlineUsers ? (
+                        {onlineUsers?.length > 0 ? (
                           onlineUsers?.map((huydev, index) => (
                             <p
                               key={index}

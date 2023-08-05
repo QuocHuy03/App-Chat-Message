@@ -3,6 +3,7 @@ import Layout from "../../components/Layout";
 import { AppContext } from "../../contexts/AppContextProvider";
 import { getAllChat } from "../../services/ChatService";
 import { formattedTime } from "../../env";
+import Loading from "../../components/Loading";
 
 export default function Chat() {
   const { onlineUsers, socket, isUser } = useContext(AppContext);
@@ -172,74 +173,80 @@ export default function Chat() {
           </div>
 
           <div className="flex-1 overflow-y-auto h-screen">
-            {messageList?.map((messageContent, index) => (
-              <React.Fragment key={index}>
-                <div
-                  className={
-                    isUser?.username === messageContent.author
-                      ? "flex gap-3 p-4 justify-end"
-                      : "flex gap-3 p-4"
-                  }
-                >
+            {messageList.length > 0 ? (
+              messageList?.map((messageContent, index) => (
+                <React.Fragment key={index}>
                   <div
                     className={
                       isUser?.username === messageContent.author
-                        ? "order-2"
-                        : ""
+                        ? "flex gap-3 p-4 justify-end"
+                        : "flex gap-3 p-4"
                     }
                   >
-                    <div className="relative">
-                      <div className=" relative inline-block rounded-full overflow-hidden h-9 w-9 md:h-11 md:w-11 ">
-                        <img
-                          alt="Avatar"
-                          loading="lazy"
-                          decoding="async"
-                          data-nimg="fill"
-                          sizes="100vw"
-                          src={`https://ui-avatars.com/api/name=${messageContent.author}`}
-                          style={{
-                            position: "absolute",
-                            height: "100%",
-                            width: "100%",
-                            inset: 0,
-                            color: "transparent",
-                          }}
-                        />
+                    <div
+                      className={
+                        isUser?.username === messageContent.author
+                          ? "order-2"
+                          : ""
+                      }
+                    >
+                      <div className="relative">
+                        <div className=" relative inline-block rounded-full overflow-hidden h-9 w-9 md:h-11 md:w-11 ">
+                          <img
+                            alt="Avatar"
+                            loading="lazy"
+                            decoding="async"
+                            data-nimg="fill"
+                            sizes="100vw"
+                            src={`https://ui-avatars.com/api/name=${messageContent.author}`}
+                            style={{
+                              position: "absolute",
+                              height: "100%",
+                              width: "100%",
+                              inset: 0,
+                              color: "transparent",
+                            }}
+                          />
+                        </div>
+                        {onlineUsers?.map((item, index) => (
+                          <span
+                            key={index}
+                            className={
+                              item === messageContent.author
+                                ? "absolute block rounded-full bg-green-500 ring-2 ring-white top-0 right-0 h-2 w-2 md:h-3 md:w-3"
+                                : ""
+                            }
+                          />
+                        ))}
                       </div>
-                      {onlineUsers?.map((item, index) => (
-                        <span
-                          key={index}
-                          className={
-                            item === messageContent.author
-                              ? "absolute block rounded-full bg-green-500 ring-2 ring-white top-0 right-0 h-2 w-2 md:h-3 md:w-3"
-                              : ""
-                          }
-                        />
-                      ))}
+                    </div>
+                    <div
+                      className={
+                        isUser?.username === messageContent.author
+                          ? "flex flex-col gap-2 items-end"
+                          : "flex flex-col gap-2"
+                      }
+                    >
+                      <div className=" flex items-center gap-1">
+                        <div className="text-sm text-gray-500">
+                          {messageContent.author}
+                        </div>
+                        <div className="text-xs text-gray-400">
+                          {formattedTime(messageContent.createdAt)}
+                        </div>
+                      </div>
+                      <div className="text-sm w-fit overflow-hidden bg-sky-500 text-white rounded-full py-2 px-3">
+                        <div>{messageContent.content}</div>
+                      </div>
                     </div>
                   </div>
-                  <div
-                    className={
-                      isUser?.username === messageContent.author
-                        ? "flex flex-col gap-2 items-end"
-                        : "flex flex-col gap-2"
-                    }
-                  >
-                    <div className=" flex items-center gap-1">
-                      <div className="text-sm text-gray-500">
-                        {messageContent.author}
-                      </div>
-                      <div className="text-xs text-gray-400">
-                        {formattedTime(messageContent.createdAt)}
-                      </div>
-                    </div>
-                    <div className="text-sm w-fit overflow-hidden bg-sky-500 text-white rounded-full py-2 px-3">
-                      <div>{messageContent.content}</div>
-                    </div>
-                  </div>
-                </div>
-              </React.Fragment>
-            ))}
+                </React.Fragment>
+              ))
+            ) : (
+              <div className="flex justify-center pt-2">
+                <Loading />
+              </div>
+            )}
           </div>
 
           <div className=" py-4  px-4  bg-white  border-t  flex  items-center  gap-2  lg:gap-4  w-full ">
