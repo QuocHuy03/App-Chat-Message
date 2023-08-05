@@ -101,17 +101,29 @@ export default function Layout({ children }) {
                             {item.username}
                           </p>
                         </div>
-                        {onlineUsers?.map((huydev, index) => (
+
+                        {onlineUsers ? (
+                          onlineUsers?.map((huydev, index) => (
+                            <p
+                              key={index}
+                              className="
+                              truncate 
+                              text-sm
+                              text-black font-medium"
+                            >
+                              {huydev === item.username ? "Online" : "Office"}
+                            </p>
+                          ))
+                        ) : (
                           <p
-                            key={index}
                             className="
-                            truncate 
-                            text-sm
-                            text-black font-medium"
+                              truncate 
+                              text-sm
+                              text-black font-medium"
                           >
-                            {huydev === item.username ? "Online" : "Office"}
+                            Office
                           </p>
-                        ))}
+                        )}
                       </div>
                     </div>
                   </div>
